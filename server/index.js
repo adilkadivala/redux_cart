@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const database = require("./server/connect");
+const database = require("./database/connect");
 
 // middleware
 app.use(express.json());
