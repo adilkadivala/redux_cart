@@ -9,9 +9,9 @@ router
   .post(Middleware.location.single("image"), productData.insertProduct);
 
 router
-  .route("/updateproduct")
+  .route("/updateproduct/:id")
   .put(Middleware.location.single("image"), productData.updateProduct);
 
-router.route("/deleteproduct").delete(productData.deleteProdcut);
+router.route("/deleteproduct/:id").delete(productData.deleteProdcut);
 
 module.exports = router;

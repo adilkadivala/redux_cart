@@ -1,4 +1,3 @@
-const { error } = require("console");
 const connectDB = require("../database/connect");
 const fs = require("fs");
 const path = require("path");
@@ -23,7 +22,8 @@ const getProduct = async (req, res) => {
 const insertProduct = async (req, res) => {
   try {
     const { title, price } = req.body;
-    const image = req.files.image ? req.files.image[0].filename : null;
+    const image = req.file ? req.file.filename : null;
+
     const Que = "INSERT INTO item (title,price,image) VALUES(?,?,?)";
     const data = [title, price, image];
 
@@ -35,7 +35,7 @@ const insertProduct = async (req, res) => {
       return res.sendStatus(200);
     });
   } catch (error) {
-    console.error("error got from inserting data");
+    console.error(error);
   }
 };
 
@@ -44,26 +44,27 @@ const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, price } = req.body;
-    let image;
 
-    if (req.files && req.files.image) {
-      image = req.files.image[0].filename;
+    let image;
+    if (req.file) {
+      image = req.file.filename;
     } else {
       image = req.body.image || null;
     }
 
-    const Que = `UPDATE item SET title =?, price=?, image=? WHERE id =?`;
+    const Que = `UPDATE item SET title = ?, price = ?, image = ? WHERE id = ?`;
     const data = [title, price, image, id];
 
     connectDB.query(Que, data, (err) => {
       if (err) {
         console.error(err.message);
-        return res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
       }
       return res.sendStatus(200);
     });
   } catch (error) {
-    console.error("error got from updating product");
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -72,7 +73,7 @@ const deleteProdcut = async (req, res) => {
   try {
     const { id } = req.params;
     const getImage = `SELECT image from item WHERE id =?`;
-    connectDB.query(id, getImage, (err, result) => {
+    connectDB.query(getImage, [id], (err, result) => {
       if (err) {
         console.error(err.message);
         return res.status(500).json({
