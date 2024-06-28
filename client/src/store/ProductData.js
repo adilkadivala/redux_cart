@@ -9,6 +9,7 @@ export const useItemData = () => useContext(ItemData);
 
 export const ItemStorage = ({ children }) => {
   const [item, setItem] = useState([]);
+  const [cart, setCart] = useState([]);
 
   // Getting item
   const getItem = async () => {
@@ -24,7 +25,17 @@ export const ItemStorage = ({ children }) => {
     getItem();
   }, []);
 
+  const addToCart = (item) => {
+    setCart((prevCart) => [...prevCart, item]);
+  };
+
+  const removeFromCart = (id) => {
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+  };
+
   return (
-    <ItemData.Provider value={{ item, setItem }}>{children}</ItemData.Provider>
+    <ItemData.Provider value={{ item, cart, addToCart, removeFromCart }}>
+      {children}
+    </ItemData.Provider>
   );
 };
