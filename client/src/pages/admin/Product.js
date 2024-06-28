@@ -46,7 +46,6 @@ const Product = () => {
         const refreshData = await axios.get("http://localhost:5236/getproduct");
         setItem(refreshData.data);
         setFormData({
-          id: null,
           title: "",
           price: "",
           image: null,
@@ -55,14 +54,13 @@ const Product = () => {
           isUpdateMode ? "Updated successfully" : "Inserted successfully"
         );
         setIsUpdateMode(false);
+        setLoading(false);
       } else {
         throw new Error("Error in form submission");
       }
     } catch (error) {
       toast.error("Error in form submission");
       console.error("Error in form submission", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -229,7 +227,7 @@ const Product = () => {
 
             <div className="todo">
               <div className="head">
-                <h3>{isUpdateMode ? "Update Data" : "Insert Data"}</h3>
+                <h3>{isUpdateMode ? "Update Data" : "New data"}</h3>
               </div>
               <div className="todo-list">
                 <form
@@ -244,7 +242,7 @@ const Product = () => {
                 >
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <label htmlFor="title" className="form-label">
-                      Enter Title
+                      Product Name
                     </label>
                     <input
                       style={{ padding: "12px 5px", fontSize: "15px" }}
@@ -254,13 +252,13 @@ const Product = () => {
                       id="title"
                       onChange={handleInput}
                       name="title"
-                      placeholder="Enter title Here"
+                      placeholder="Ex: Pen"
                       disabled={loading}
                     />
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     <label htmlFor="price" className="form-label">
-                      Price
+                      Product Price
                     </label>
                     <input
                       style={{ padding: "12px 5px", fontSize: "15px" }}
@@ -270,7 +268,7 @@ const Product = () => {
                       id="price"
                       onChange={handleInput}
                       name="price"
-                      placeholder="Enter price Here"
+                      placeholder="Ex: 1200"
                       disabled={loading}
                     />
                   </div>

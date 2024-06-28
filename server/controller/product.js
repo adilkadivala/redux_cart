@@ -52,15 +52,48 @@ const updateProduct = async (req, res) => {
       image = req.body.image || null;
     }
 
-    const Que = `UPDATE item SET title = ?, price = ?, image = ? WHERE id = ?`;
-    const data = [title, price, image, id];
-
-    connectDB.query(Que, data, (err) => {
+    const getImageQuery = `SELECT image FROM item WHERE id = ?`;
+    connectDB.query(getImageQuery, [id], (err, result) => {
       if (err) {
         console.error(err.message);
         return res.status(500).json({ message: "Internal server error" });
       }
-      return res.sendStatus(200);
+
+      if (result.length > 0) {
+        const oldImage = result[0].image;
+
+        if (req.file && oldImage) {
+          const oldImagePath = path.join(
+            __dirname,
+            "../../client/public/uploads",
+            oldImage
+          );
+
+          fs.access(oldImagePath, fs.constants.F_OK, (err) => {
+            if (!err) {
+              fs.unlink(oldImagePath, (err) => {
+                if (err) {
+                  console.error(`Error deleting old image: ${err.message}`);
+                }
+              });
+            }
+          });
+        }
+
+        // Update the database with the new data
+        const updateQuery = `UPDATE item SET title = ?, price = ?, image = ? WHERE id = ?`;
+        const data = [title, price, image, id];
+
+        connectDB.query(updateQuery, data, (err) => {
+          if (err) {
+            console.error(err.message);
+            return res.status(500).json({ message: "Internal server error" });
+          }
+          return res.sendStatus(200);
+        });
+      } else {
+        return res.status(404).json({ message: "Record not found" });
+      }
     });
   } catch (error) {
     console.error(error);
