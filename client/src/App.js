@@ -1,14 +1,12 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
-import DashboardRoute from "./routes/admin/DashboardRoute";
-import ProductRoute from "./routes/admin/ProductRoute";
+import Pathes from "./routes/Pathes";
 
 const App = () => {
   return (
     <>
       <BrowserRouter>
-        <DashboardRoute />
-        <ProductRoute />
+        <Pathes />
       </BrowserRouter>
     </>
   );

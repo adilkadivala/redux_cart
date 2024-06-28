@@ -9,7 +9,6 @@ export const useItemData = () => useContext(ItemData);
 
 export const ItemStorage = ({ children }) => {
   const [item, setItem] = useState([]);
-  console.log(item)
 
   // Getting item
   const getItem = async () => {
