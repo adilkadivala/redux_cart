@@ -4,16 +4,14 @@ import { NavLink } from "react-router-dom";
 import Sidebar from "../admin/layout/Sidebar";
 import { DeleteModal } from "./layout/Modal";
 import { toast } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
 import { fetchProducts } from "../../store/slices/addToCart/productSlice";
-
-import { useSelector } from "react-redux";
 import axios from "axios";
 
 const Product = () => {
   const [sidebarHidden, setSidebarHidden] = useState(window.innerWidth < 768);
   const [isDarkMode, setDarkMode] = useState(false);
-  // const { item, setItem } = useItemData();
-
+  const dispatch = useDispatch();
   const products = useSelector((state) => state.products);
   const [loading, setLoading] = useState(false);
   const [itemId, setItemId] = useState(null);
@@ -47,8 +45,7 @@ const Product = () => {
       const response = await axios[method](url, formdata);
 
       if (response.status === 200) {
-        const refreshData = await axios.get("http://localhost:5236/getproduct");
-        // setItem(refreshData.data);
+        dispatch(fetchProducts());
         setFormData({
           title: "",
           price: "",
@@ -95,8 +92,7 @@ const Product = () => {
         `http://localhost:5236/deleteproduct/${itemId}`
       );
       if (response.status === 200) {
-        const response = await axios.get("http://localhost:5236/getproduct");
-        // setItem(response.data);
+        dispatch(fetchProducts()); 
         closeDeleteModal();
         toast.success("Deleted successfully");
       } else {
@@ -133,6 +129,7 @@ const Product = () => {
 
   // Window resize handler
   useEffect(() => {
+    dispatch(fetchProducts());
     const handleResize = () => {
       setSidebarHidden(window.innerWidth < 768);
     };
@@ -142,7 +139,7 @@ const Product = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
