@@ -4,13 +4,17 @@ import { NavLink } from "react-router-dom";
 import Sidebar from "../admin/layout/Sidebar";
 import { DeleteModal } from "./layout/Modal";
 import { toast } from "react-toastify";
-import { useItemData } from "../../store/ProductData";
+import { fetchProducts } from "../../store/slices/addToCart/productSlice";
+
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 const Product = () => {
   const [sidebarHidden, setSidebarHidden] = useState(window.innerWidth < 768);
   const [isDarkMode, setDarkMode] = useState(false);
-  const { item, setItem } = useItemData();
+  // const { item, setItem } = useItemData();
+
+  const products = useSelector((state) => state.products);
   const [loading, setLoading] = useState(false);
   const [itemId, setItemId] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -44,7 +48,7 @@ const Product = () => {
 
       if (response.status === 200) {
         const refreshData = await axios.get("http://localhost:5236/getproduct");
-        setItem(refreshData.data);
+        // setItem(refreshData.data);
         setFormData({
           title: "",
           price: "",
@@ -92,7 +96,7 @@ const Product = () => {
       );
       if (response.status === 200) {
         const response = await axios.get("http://localhost:5236/getproduct");
-        setItem(response.data);
+        // setItem(response.data);
         closeDeleteModal();
         toast.success("Deleted successfully");
       } else {
@@ -193,8 +197,8 @@ const Product = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {item &&
-                    item.map((items) => (
+                  {products &&
+                    products.map((items) => (
                       <tr key={items.id}>
                         <td>
                           <img src={`/uploads/${items.image}`} alt="user" />

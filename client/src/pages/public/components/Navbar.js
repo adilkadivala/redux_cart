@@ -1,14 +1,25 @@
 import React, { useState } from "react";
 import "../../../assets/css/public/style.css";
 import { NavLink } from "react-router-dom";
-import { useItemData } from "../../../store/ProductData";
+// import { useItemData } from "../../../store/ProductData"; context api provider
+
+// redux
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCart } from "../../../store/slices/addToCart/cart";
 
 const Navbar = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { cart, removeFromCart } = useItemData();
+  // const { cart, removeFromCart } = useItemData();  context api hook
+
+  const cart = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
 
   const handleCartClick = () => {
     setIsCartOpen(!isCartOpen);
+  };
+
+  const handleRemoveFromCart = (id) => {
+    dispatch(removeFromCart(id));
   };
 
   return (
@@ -85,7 +96,9 @@ const Navbar = () => {
                                 color: "#fff",
                                 cursor: "pointerF",
                               }}
-                              onClick={() => removeFromCart(item.id)}
+                              // onClick={() => removeFromCart(item.id)}  context api
+
+                              onClick={() => handleRemoveFromCart(item.id)}
                             >
                               Remove
                             </button>
